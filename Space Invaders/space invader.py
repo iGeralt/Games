@@ -34,7 +34,12 @@ gameDisplay  = pygame.display.set_mode((window_width,window_height))
 
 def game_over():
     game_over_txt = game_over_text.render("GAME OVER",True,white)
-    gameDisplay.blit(game_over_txt,(400,350))
+    gameDisplay.blit(game_over_txt,(360,350))
+    game_over_txt = game_over_text.render("Press N to start new game or Q to quit game.",True,white)
+    gameDisplay.blit(game_over_txt,(50,400))
+    pygame.display.update()
+    #global running
+
 
 def show_Score(x,y):
     score = font.render("Score : " + str(score_value),True,white)
@@ -58,7 +63,9 @@ def isCollision(enemy_x,enemy_y,bullet_x,bullet_y):
     else :
         return False
 
-
+def myquit():
+    pygame.quit()
+    sys.exit(0)
 
 # game loop
 def game_loop():
@@ -111,8 +118,24 @@ def game_loop():
     global game_over_text 
     game_over_text = pygame.font.Font("America.ttf",64)
     
+    #global running 
     running = True
+    gameOver = False
     while running:
+        while gameOver:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    gameOver = False
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        running = False
+                        gameOver = False
+                    if event.key == pygame.K_n:
+                        game_loop()
+
+
         gameDisplay.fill(black)
         gameDisplay.blit(background,(0,0))
         for event in pygame.event.get():
@@ -153,6 +176,7 @@ def game_loop():
                 for j in range(number_of_enemies):
                     enemy_y[j] = 10000
                 game_over()
+                gameOver = True
                 break 
 
             if enemy_x[i] <= 0 :
@@ -193,5 +217,7 @@ def game_loop():
         show_Score(text_x,text_y)
         
         pygame.display.update()
+    pygame.quit()
+    quit()
 
 game_loop()
